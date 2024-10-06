@@ -1,0 +1,159 @@
+body {
+    font-family: 'Arial', sans-serif;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Custom styles for product images */
+.product-image {
+    object-fit: cover;
+}
+
+/* Dropdown Menu */
+#dropdownInformation {
+    position: absolute; 
+    right: 0; 
+    top: calc(100% + 0.5rem); 
+    width: 12rem; 
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    z-index: 50; 
+    padding: 0.5rem 0; 
+    transition: all 0.3s ease-in-out; 
+}
+
+#dropdownInformation.open {
+    display: block; 
+}
+
+#dropdownInformation.hidden {
+    display: none; 
+}
+
+/* Dropdown item styles */
+#dropdownInformation ul li a {
+    padding: 0.75rem 1rem;
+    display: block;
+    text-align: left;
+    color: #333;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+#dropdownInformation ul li a:hover {
+    background-color: #f3f4f6; /* Background color on hover */
+}
+
+/* Hover effects for buttons */
+button:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for page transition */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Navbar Menu Items */
+.nav-item {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+/* Underline effect on hover */
+.nav-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 100%;
+    background: blue; /* Change this color as needed */
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+    transform-origin: bottom right;
+}
+
+/* Bounce effect on hover */
+.nav-item:hover {
+    animation: bounce 0.5s forwards;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+/* Underline effect on hover */
+.nav-item:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Bounce effect on click */
+.nav-item:active {
+    animation: bounce-click 0.1s forwards;
+}
+
+@keyframes bounce-click {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+}
+
+/* Add to your existing CSS file */
+
+/* Logo Text Animation */
+.logo {
+    font-size: 2rem; /* Adjust the size to be smaller */
+    background: linear-gradient(45deg, #1e3a8a, #091b28, #073071, #1e3a8a); /* Darker pastel blue gradient */
+    background-size: 400% 400%; /* To enable the color movement */
+    -webkit-background-clip: text; /* For Safari */
+    background-clip: text; /* Standard property */
+    -webkit-text-fill-color: transparent; /* For Safari */
+    animation: gradientAnimation 10s ease infinite; /* Increase speed for movement */
+}
+
+/* Gradient Animation */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#toggleDrawer {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เพิ่มการเปลี่ยนแปลง */
+    box-shadow: none; /* ลบเงาเริ่มต้น */
+}
+
+#toggleDrawer:hover {
+    transform: rotate(360deg); /* หมุนเมื่อโฮเวอร์ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เพิ่มเงาอ่อนๆ */
+    box-shadow: none;
+}
+
+closeDrawer
+#closeDrawer {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เพิ่มการเปลี่ยนแปลง */
+    box-shadow: none; /* ลบเงาเริ่มต้น */
+}
+
+#closeDrawer:hover {
+    transform: rotate(360deg); /* หมุนเมื่อโฮเวอร์ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เพิ่มเงาอ่อนๆ */
+    box-shadow: none;
+}
