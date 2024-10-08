@@ -18,9 +18,11 @@ class CategoryController extends Controller
     }
 
     public function allcategory() {
-        $categories = Category::all(); // ดึงข้อมูลทั้งหมดจากหมวดหมู่
+        $categories = Category::withCount('products')->get(); // ดึงข้อมูลหมวดหมู่พร้อมนับจำนวนผลิตภัณฑ์
         return view('admin.category.allcategory', compact('categories'));
     }
+    
+    
 
     public function store(Request $request) {
         $request->validate([

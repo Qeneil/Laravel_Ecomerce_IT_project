@@ -109,8 +109,6 @@ button:hover {
     100% { transform: translateY(0); }
 }
 
-/* Add to your existing CSS file */
-
 /* Logo Text Animation */
 .logo {
     font-size: 2rem; /* Adjust the size to be smaller */
@@ -135,25 +133,99 @@ button:hover {
     }
 }
 
+/* Drawer toggle button animations */
 #toggleDrawer {
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เพิ่มการเปลี่ยนแปลง */
-    box-shadow: none; /* ลบเงาเริ่มต้น */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: none;
 }
 
 #toggleDrawer:hover {
     transform: rotate(360deg); /* หมุนเมื่อโฮเวอร์ */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เพิ่มเงาอ่อนๆ */
-    box-shadow: none;
 }
 
-closeDrawer
 #closeDrawer {
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* เพิ่มการเปลี่ยนแปลง */
-    box-shadow: none; /* ลบเงาเริ่มต้น */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: none;
 }
 
 #closeDrawer:hover {
-    transform: rotate(360deg); /* หมุนเมื่อโฮเวอร์ */
+    transform: rotate(360deg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เพิ่มเงาอ่อนๆ */
-    box-shadow: none;
+}
+
+/* Small buttons for Edit and Delete */
+.action-buttons a {
+    display: inline-block;
+    width: 70px; /* ความกว้างปุ่ม */
+    padding: 6px; /* ขนาด padding รอบปุ่ม */
+    font-size: 12px; /* ขนาดฟอนต์ */
+    border-radius: 4px; /* มุมปุ่มโค้ง */
+    text-align: center;
+}
+
+.action-buttons a.edit-btn {
+    background-color: #1abc9c;  /* ปรับสีเขียวที่ต้องการ */
+    color: white; /* สีตัวอักษร */
+}
+
+.action-buttons a.delete-btn {
+    background-color: #e74c3c; /* ปรับสีแดงที่ต้องการ */
+    color: white; /* สีตัวอักษร */
+}
+
+.action-buttons a:hover {
+    opacity: 0.9; /* ลดความทึบเล็กน้อยเมื่อ hover */
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 5px; /* ระยะห่างระหว่างปุ่ม */
+}
+
+.action-buttons a, .action-buttons button {
+    width: 80px; /* กำหนดความกว้างของปุ่ม */
+    height: 30px; /* กำหนดความสูงของปุ่ม */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem; /* ขนาดตัวอักษร */
+    padding: 0; /* ปรับ padding ให้ไม่มีเพิ่มขนาด */
+}
+
+.edit-btn {
+    background-color: #3b82f6; /* สีฟ้าสำหรับปุ่ม Edit */
+    color: white;
+    border-radius: 5px;
+}
+
+.edit-btn:hover {
+    background-color: #2563eb; /* สีเข้มขึ้นเมื่อ hover */
+}
+
+.delete-btn {
+    background-color: #ef4444; /* สีแดงสำหรับปุ่ม Delete */
+    color: white;
+    border-radius: 5px;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626; /* สีเข้มขึ้นเมื่อ hover */
+}
+
+.action-buttons .edit-btn,
+.action-buttons .delete-btn {
+    width: 60px; /* ลดความกว้างลง */
+    height: 28px; /* ลดความสูงลง */
+    padding: 0; /* กำจัดการ padding เพื่อให้ข้อความอยู่พอดี */
+    font-size: 12px; /* ลดขนาดข้อความลง */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+table td {
+    padding: 12px 8px; /* Adjust these values as needed */
 }

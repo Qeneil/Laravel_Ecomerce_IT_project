@@ -4,25 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Products - DP Store</title>
+    <title>Store Management - DP Store</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('admin-asset/css/style.css') }}">
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 flex flex-col min-h-screen">
 
     <!-- Navbar -->
     <nav class="flex justify-between items-center p-5 bg-white shadow-md">
         <div class="text-2xl font-bold logo">DP STORE</div>
         <ul class="flex space-x-6">
-            <li class="nav-item"><a href="{{ url('Homepage.html') }}" class="hover:text-blue-500">HOME</a></li>
-            <li class="nav-item"><a href="#" class="hover:text-blue-500">ABOUT</a></li>
-            <li class="nav-item"><a href="{{ url('Shop.html') }}" class="hover:text-blue-500">SHOP</a></li>
-            <li class="nav-item"><a href="{{ url('Contact.html') }}" class="hover:text-blue-500">CONTACT</a></li>
+            <li class="nav-item"><a href="{{ route('admin') }}" class="hover:text-blue-500">HOME</a></li>
+            <li class="nav-item"><a href="" class="hover:text-blue-500">ABOUT</a></li>
+            <li class="nav-item"><a href="{{ route('shop') }}" class="hover:text-blue-500">SHOP</a></li>
+            <li class="nav-item"><a href="{{ route('contact') }}" class="hover:text-blue-500">CONTACT</a></li>
         </ul>
+        <div class="flex space-x-4 relative items-center">
+            <button id="dropdownInformationButton"
+                class="text-gray-800 font-medium text-sm px-5 py-2.5 text-center inline-flex items-center dark:text-white"
+                type="button">
+                <span>User Test</span>
+            </button>
+            <div id="dropdownInformation"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                    <div>Test Beta</div>
+                    <div class="font-medium truncate">user@gmail.com</div>
+                </div>
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                    <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Profile</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Orders</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                    </li>
+                </ul>
+                <div class="py-2">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Login</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Register</a>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <div class="flex">
+    <div class="flex flex-grow">
         <!-- Drawer Navigation -->
         <div id="drawer" class="bg-white w-64 h-screen shadow-lg transition-transform transform -translate-x-full">
             <div class="p-5 flex items-center justify-between">
@@ -40,67 +69,75 @@
             </ul>
         </div>
 
+        <!-- Toggle Menu Icon below the header -->
         <button id="toggleDrawer" class="absolute left-5 top-24 z-50">
             <img src="{{ asset('admin-asset/images/menu-bar.png') }}" alt="Toggle Menu" class="w-8 h-8">
         </button>
 
-        <!-- All Products Section -->
-        <div class="flex-1 p-5">  <!-- Added the missing <div> for the product section -->
-            <h2 class="text-3xl font-bold mb-4">All Products</h2>
-            @if(session('success'))
-                <div class="mb-4 text-green-600">{{ session('success') }}</div>
+        <!-- All Products Content -->
+        <div class="flex flex-col items-center p-5 w-full">
+            <h1 class="text-2xl font-bold mb-5">All Products</h1>
+
+            <!-- Success and Error Messages -->
+            @if (session('success'))
+                <div class="bg-green-500 text-white p-3 rounded-md mb-4 w-full max-w-4xl">
+                    {{ session('success') }}
+                </div>
             @endif
-            <table class="min-w-full bg-white border">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border-b">ID</th>
-                        <th class="py-2 px-4 border-b">Product Name</th>
-                        <th class="py-2 px-4 border-b">Image</th>
-                        <th class="py-2 px-4 border-b">Price</th>
-                        <th class="py-2 px-4 border-b">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($products as $product)
-                        <tr>
-                            <td class="py-2 px-4 border-b">{{ $product->id }}</td>
-                            <td class="py-2 px-4 border-b">{{ $product->product_name }}</td>
-                            <td class="py-2 px-4 border-b">
-                                <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-20 h-20 object-cover">
-                            </td>
-                            <td class="py-2 px-4 border-b">{{ number_format($product->price, 2) }} ฿</td>
-                            <td class="py-2 px-4 border-b">
-                                <a href="{{ route('admin.product.edit', $product->id) }}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Edit</a>
-                                <form action="{{ route('admin.product.destroy', $product->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
-                                </form>
-                            </td>
+
+            @if ($errors->any())
+                <div class="bg-red-500 text-white p-3 rounded-md mb-4 w-full max-w-4xl">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="bg-white rounded-lg shadow-md p-5 w-full max-w-4xl">
+                <table class="min-w-full mx-auto table-fixed text-center">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="py-2 px-4 border-b">ID</th>
+                            <th class="py-2 px-4 border-b">Product Name</th>
+                            <th class="py-2 px-4 border-b">Image</th>
+                            <th class="py-2 px-4 border-b">Price</th>
+                            <th class="py-2 px-4 border-b">Action</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="py-2 px-4 border-b text-center">No products found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+    @foreach ($products as $product)
+        <tr class="border-b">
+            <td class="py-2 px-4">{{ $product->product_id }}</td>
+            <td class="py-2 px-4">{{ $product->product_name }}</td>
+            <td class="py-2 px-4">
+                <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-24 h-auto max-h-24 mx-auto block">
+            </td>
+            <td class="py-2 px-4">{{ number_format($product->price, 2) }}</td>
+            <td class="py-4 px-4 flex justify-center space-x-2 action-buttons">
+                <a href="{{ route('admin.product.edit', $product->product_id) }}" class="edit-btn bg-blue-500 text-white rounded hover:bg-blue-600">Edit</a>
+                <form action="{{ route('admin.product.destroy', $product->product_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="delete-btn bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
+                </table>
+            </div>
         </div>
     </div>
 
-    <script>
-        const toggleDrawer = document.getElementById('toggleDrawer');
-        const drawer = document.getElementById('drawer');
-        const closeDrawer = document.getElementById('closeDrawer');
+    <!-- Footer -->
+    <footer class="bg-white mt-10 py-6 text-center">
+        <p>&copy; 2024 Technology DP Store</p>
+    </footer>
 
-        toggleDrawer.onclick = () => {
-            drawer.classList.toggle('-translate-x-full'); // Toggle the drawer
-        };
-
-        closeDrawer.onclick = () => {
-            drawer.classList.add('-translate-x-full'); // Close the drawer
-        };
-    </script>
+    <script src="{{ asset('admin-asset/JavaScript/script.js') }}" defer></script>
 </body>
 
 </html>

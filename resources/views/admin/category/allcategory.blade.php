@@ -15,10 +15,10 @@
     <nav class="flex justify-between items-center p-5 bg-white shadow-md">
         <div class="text-2xl font-bold logo">DP STORE</div>
         <ul class="flex space-x-6">
-            <li class="nav-item"><a href="{{ url('Homepage') }}" class="hover:text-blue-500">HOME</a></li>
-            <li class="nav-item"><a href="#" class="hover:text-blue-500">ABOUT</a></li>
-            <li class="nav-item"><a href="{{ url('Shop') }}" class="hover:text-blue-500">SHOP</a></li>
-            <li class="nav-item"><a href="{{ url('Contact') }}" class="hover:text-blue-500">CONTACT</a></li>
+            <li class="nav-item"><a href="{{ route('admin') }}" class="hover:text-blue-500">HOME</a></li>
+            <li class="nav-item"><a href="" class="hover:text-blue-500">ABOUT</a></li>
+            <li class="nav-item"><a href="{{ route('shop') }}" class="hover:text-blue-500">SHOP</a></li>
+            <li class="nav-item"><a href="{{ route('contact') }}" class="hover:text-blue-500">CONTACT</a></li>
         </ul>
         <div class="flex space-x-4 relative items-center">
             <button id="dropdownInformationButton" class="text-gray-800 font-medium text-sm px-5 py-2.5 text-center inline-flex items-center dark:text-white" type="button">
@@ -89,6 +89,7 @@
                     @foreach($categories as $category)
                         <div class="bg-white border border-gray-300 rounded-lg p-4">
                             <h3 class="font-semibold text-lg">{{ $category->category_name }}</h3>
+                            <p class="text-gray-500">Number of Products: {{ $category->products_count }}</p> <!-- แสดงจำนวนผลิตภัณฑ์ -->
                             <div class="mt-4">
                                 <a href="{{ route('admin.category.manage', ['id' => $category->id]) }}" class="bg-green-500 text-white px-3 py-1 inline-block text-center">EDIT</a>
                                 <form action="{{ route('admin.category.destroy', ['id' => $category->id]) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this category?');">

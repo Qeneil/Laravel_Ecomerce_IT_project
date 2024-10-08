@@ -6,94 +6,124 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category; 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
     // แสดงรายการผลิตภัณฑ์ทั้งหมด
-    public function allproduct()
+    public function allProduct()
     {
-        $products = Product::all(); // ดึงข้อมูลผลิตภัณฑ์ทั้งหมด
-        return view('admin.product.allproduct', compact('products'));
+        $products = Product::with('category')->get(); // ดึงข้อมูลผลิตภัณฑ์ทั้งหมด
+        return view('admin.product.allproduct', compact('products')); // ส่งตัวแปร $products ไปยังมุมมอง
     }
 
-    // แสดงฟอร์มสำหรับสร้างผลิตภัณฑ์ใหม่
+    // ฟอร์มเพิ่มผลิตภัณฑ์
     public function create()
     {
         $categories = Category::all(); // ดึงข้อมูลหมวดหมู่ทั้งหมด
-        return view('admin.product.addproduct', compact('categories')); // ส่งตัวแปรไปยัง view
+        return view('admin.product.addproduct', compact('categories'));
     }
 
-    // เก็บข้อมูลผลิตภัณฑ์ใหม่
+    // บันทึกผลิตภัณฑ์ใหม่
     public function store(Request $request)
     {
+        // Validate the request
         $request->validate([
             'product_name' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // กำหนด validation สำหรับภาพ
+            'stock_quantity' => 'required|integer',
+            'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id', // ตรวจสอบ category_id
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $imageName = time() . '.' . $request->image->extension(); // สร้างชื่อไฟล์ภาพที่ไม่ซ้ำ
-        $request->image->move(public_path('admin-asset/images/Product'), $imageName); // ย้ายไฟล์ไปยังโฟลเดอร์ที่กำหนด
-
-        Product::create([
-            'product_name' => $request->product_name,
-            'price' => $request->price,
-            'image' => 'admin-asset/images/Product/' . $imageName, // บันทึกที่อยู่ภาพในฐานข้อมูล
-        ]);
-
-        return redirect()->route('admin.product.allproduct')->with('success', 'Product added successfully!');
-    }
-
-    // แสดงฟอร์มสำหรับแก้ไขผลิตภัณฑ์
-    public function edit($id)
-    {
-        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
-        return view('admin.product.edit', compact('product')); // ส่งข้อมูลไปยัง view แก้ไข
-    }
-
-    // อัปเดตข้อมูลผลิตภัณฑ์
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'product_name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // กำหนด validation สำหรับภาพ
-        ]);
-
-        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
-
-        // อัปเดตข้อมูลผลิตภัณฑ์
+        // สร้างออบเจ็กต์ Product ใหม่
+        $product = new Product();
         $product->product_name = $request->product_name;
         $product->price = $request->price;
+        $product->stock_quantity = $request->stock_quantity;
+        $product->description = $request->description;
+        $product->category_id = $request->category_id;
 
+        // การอัปโหลดภาพ
         if ($request->hasFile('image')) {
-            // ลบภาพเก่า (หากมี) ก่อนอัปโหลดภาพใหม่
-            if (file_exists(public_path($product->image))) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('admin-asset/images/Product'), $imageName);
+            $product->image = 'admin-asset/images/Product/' . $imageName;
+        }
+
+        // บันทึกสินค้าในฐานข้อมูล
+        $product->save();
+
+        // ส่งกลับไปยังหน้ารายการสินค้าพร้อมข้อความสำเร็จ
+        return redirect()->route('admin.product.allproduct')->with('success', 'Product added successfully.');
+    }
+    
+    // แก้ไขผลิตภัณฑ์
+    public function edit($product_id)
+    {
+        // ค้นหาผลิตภัณฑ์โดยใช้ product_id
+        $product = Product::findOrFail($product_id);
+        $categories = Category::all(); // ดึงข้อมูลหมวดหมู่ทั้งหมด
+        return view('admin.product.editproduct', compact('product', 'categories'));
+    }
+
+    // อัปเดตผลิตภัณฑ์
+    public function update(Request $request, $product_id)
+    {
+        $product = Product::findOrFail($product_id);
+
+        // Validate input
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock_quantity' => 'required|integer',
+            'description' => 'required|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        // Update product attributes
+        $product->product_name = $request->product_name;
+        $product->price = $request->price;
+        $product->stock_quantity = $request->stock_quantity;
+        $product->description = $request->description;
+
+        // Handle category id
+        if ($request->filled('category_id')) {
+            $product->category_id = $request->category_id;
+        }
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($product->image && file_exists(public_path($product->image))) {
                 unlink(public_path($product->image));
             }
 
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('admin-asset/images/Product'), $imageName);
-            $product->image = 'admin-asset/images/Product/' . $imageName; // อัปเดตที่อยู่ภาพใหม่
+            $product->image = 'admin-asset/images/Product/' . $imageName;
         }
 
-        $product->save(); // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
+        // Save product
+        $product->save();
 
-        return redirect()->route('admin.product.allproduct')->with('success', 'Product updated successfully!');
+        return redirect()->route('admin.product.allproduct')->with('success', 'Product updated successfully.');
     }
 
     // ลบผลิตภัณฑ์
-    public function destroy($id)
+    public function destroy($product_id)
     {
-        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
-
-        // ลบภาพจากเซิร์ฟเวอร์ (หากมี)
-        if (file_exists(public_path($product->image))) {
+        $product = Product::findOrFail($product_id);
+        
+        // Delete image from storage
+        if ($product->image && file_exists(public_path($product->image))) {
             unlink(public_path($product->image));
         }
 
-        $product->delete(); // ลบผลิตภัณฑ์
-        return redirect()->route('admin.product.allproduct')->with('success', 'Product deleted successfully!');
+        // Delete the product
+        $product->delete();
+
+        return redirect()->route('admin.product.allproduct')->with('success', 'Product deleted successfully.');
     }
 }

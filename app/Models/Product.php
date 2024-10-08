@@ -9,12 +9,15 @@ class Product extends Model
 {
     use HasFactory;
 
+    // ระบุให้ Laravel รู้ว่าคีย์หลักคือ product_id
+    protected $primaryKey = 'product_id';
+
     protected $fillable = [
         'product_name',
         'description',
         'price',
         'stock_quantity',
-        'category_id',
+        'category_id', // ต้องมีอยู่แล้ว
         'image',
     ];
 

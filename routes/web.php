@@ -57,11 +57,12 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
         Route::controller(ProductController::class)->group(function () {
             Route::get('/product/create', 'create')->name('admin.product.addproduct');
             Route::post('/product/store', 'store')->name('admin.product.store');
-            Route::get('/product/allproduct', 'allproduct')->name('admin.product.allproduct');
-            Route::get('/product/edit/{id}', 'edit')->name('admin.product.edit');
+            Route::get('/product/allproduct', 'allProduct')->name('admin.product.allproduct');
             Route::delete('/product/{id}', 'destroy')->name('admin.product.destroy'); 
             Route::put('/product/update/{id}', 'update')->name('admin.product.update');
+            Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('admin.product.edit');
         });
+        
 
         Route::controller(ProductAttributeController::class)->group(function () {
             Route::get('/attribute/create', 'index')->name('admin.attribute.create');
