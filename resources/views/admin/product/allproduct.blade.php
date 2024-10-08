@@ -35,7 +35,7 @@
                 <li><a href="{{ route('admin.category.allcategory') }}" class="block p-2 hover:bg-gray-200">All Category</a></li>
                 <li><a href="{{ route('admin.category.create') }}" class="block p-2 hover:bg-gray-200">Add Category</a></li>
                 <li><a href="{{ route('admin.product.allproduct') }}" class="block p-2 hover:bg-gray-200">All Product</a></li>
-                <li><a href="{{ route('admin.product.create') }}" class="block p-2 hover:bg-gray-200">Add Product</a></li>
+                <li><a href="{{ route('admin.product.addproduct') }}" class="block p-2 hover:bg-gray-200">Add Product</a></li>
                 <li><a href="#" class="block p-2 hover:bg-gray-200">Pending Order</a></li>
             </ul>
         </div>
@@ -45,7 +45,7 @@
         </button>
 
         <!-- All Products Section -->
-        <div class="flex-1 p-5">
+        <div class="flex-1 p-5">  <!-- Added the missing <div> for the product section -->
             <h2 class="text-3xl font-bold mb-4">All Products</h2>
             @if(session('success'))
                 <div class="mb-4 text-green-600">{{ session('success') }}</div>
@@ -61,12 +61,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $product)
+                    @forelse($products as $product)
                         <tr>
                             <td class="py-2 px-4 border-b">{{ $product->id }}</td>
                             <td class="py-2 px-4 border-b">{{ $product->product_name }}</td>
                             <td class="py-2 px-4 border-b">
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->product_name }}" class="w-20 h-20 object-cover">
+                                <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-20 h-20 object-cover">
                             </td>
                             <td class="py-2 px-4 border-b">{{ number_format($product->price, 2) }} ฿</td>
                             <td class="py-2 px-4 border-b">
@@ -78,7 +78,11 @@
                                 </form>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-2 px-4 border-b text-center">No products found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

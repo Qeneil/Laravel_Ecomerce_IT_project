@@ -54,7 +54,6 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
             Route::get('/subcategory/manage', 'manage_subcat')->name('admin.subcategory.managesub');
             Route::delete('/subcategory/destroy/{id}', 'destroy')->name('admin.subcategory.destroy'); // เพิ่ม route นี้
         });
-
         Route::controller(ProductController::class)->group(function () {
             Route::get('/product/create', 'create')->name('admin.product.addproduct');
             Route::post('/product/store', 'store')->name('admin.product.store');

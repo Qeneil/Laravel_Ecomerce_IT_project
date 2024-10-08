@@ -10,94 +10,90 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    public function create() {
-        $categories = Category::all(); // ดึงข้อมูลหมวดหมู่จากฐานข้อมูล
-        return view('admin.product.addproduct', compact('categories')); // ส่งข้อมูลหมวดหมู่ไปยัง view
+    // แสดงรายการผลิตภัณฑ์ทั้งหมด
+    public function allproduct()
+    {
+        $products = Product::all(); // ดึงข้อมูลผลิตภัณฑ์ทั้งหมด
+        return view('admin.product.allproduct', compact('products'));
     }
-  
-    public function allproduct() {
-        $products = Product::with('category')->get(); // ดึงผลิตภัณฑ์ทั้งหมด พร้อมข้อมูล category
-        Log::info($products); // log ข้อมูลเพื่อตรวจสอบ
-        return view('admin.product.allproduct', compact('products')); // ส่งข้อมูลผลิตภัณฑ์ไปยัง view
+
+    // แสดงฟอร์มสำหรับสร้างผลิตภัณฑ์ใหม่
+    public function create()
+    {
+        $categories = Category::all(); // ดึงข้อมูลหมวดหมู่ทั้งหมด
+        return view('admin.product.addproduct', compact('categories')); // ส่งตัวแปรไปยัง view
     }
-    
-    public function store(Request $request) {
+
+    // เก็บข้อมูลผลิตภัณฑ์ใหม่
+    public function store(Request $request)
+    {
         $request->validate([
-            'productName' => 'required|string|max:100',
-            'productPrice' => 'required|numeric',
-            'productQuantity' => 'required|integer',
-            'productShortDesc' => 'required|string',
-            'productLongDesc' => 'required|string',
-            'category' => 'required|exists:categories,id',
-            'productImage' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // กำหนด validation สำหรับภาพ
         ]);
 
-        // Handle the uploaded image
-        $imagePath = null; 
-        if ($request->hasFile('productImage')) {
-            // Save the image to public storage
-            $imagePath = $request->file('productImage')->store('images/Product', 'public');
-        }
+        $imageName = time() . '.' . $request->image->extension(); // สร้างชื่อไฟล์ภาพที่ไม่ซ้ำ
+        $request->image->move(public_path('admin-asset/images/Product'), $imageName); // ย้ายไฟล์ไปยังโฟลเดอร์ที่กำหนด
 
-        // Create the product
         Product::create([
-            'product_name' => $request->productName,
-            'description' => $request->productLongDesc,
-            'price' => $request->productPrice,
-            'stock_quantity' => $request->productQuantity,
-            'category_id' => $request->category, 
-            'image' => $imagePath, 
+            'product_name' => $request->product_name,
+            'price' => $request->price,
+            'image' => 'admin-asset/images/Product/' . $imageName, // บันทึกที่อยู่ภาพในฐานข้อมูล
         ]);
 
         return redirect()->route('admin.product.allproduct')->with('success', 'Product added successfully!');
     }
 
-    public function edit($id) {
-        $product = Product::with('category')->findOrFail($id); 
-        $categories = Category::all(); 
-        return view('admin.product.editproduct', compact('product', 'categories')); 
+    // แสดงฟอร์มสำหรับแก้ไขผลิตภัณฑ์
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
+        return view('admin.product.edit', compact('product')); // ส่งข้อมูลไปยัง view แก้ไข
     }
 
-    public function update(Request $request, $id) {
+    // อัปเดตข้อมูลผลิตภัณฑ์
+    public function update(Request $request, $id)
+    {
         $request->validate([
-            'productName' => 'required|string|max:100',
-            'productPrice' => 'required|numeric',
-            'productQuantity' => 'required|integer',
-            'productShortDesc' => 'required|string',
-            'productLongDesc' => 'required|string',
-            'category' => 'required|exists:categories,id', 
-            'productImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // กำหนด validation สำหรับภาพ
         ]);
 
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
 
-        if ($request->hasFile('productImage')) {
-            // Save the new image to public storage
-            $imagePath = $request->file('productImage')->store('images/Product', 'public');
-            $product->image = $imagePath; 
+        // อัปเดตข้อมูลผลิตภัณฑ์
+        $product->product_name = $request->product_name;
+        $product->price = $request->price;
+
+        if ($request->hasFile('image')) {
+            // ลบภาพเก่า (หากมี) ก่อนอัปโหลดภาพใหม่
+            if (file_exists(public_path($product->image))) {
+                unlink(public_path($product->image));
+            }
+
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('admin-asset/images/Product'), $imageName);
+            $product->image = 'admin-asset/images/Product/' . $imageName; // อัปเดตที่อยู่ภาพใหม่
         }
 
-        $product->update([
-            'product_name' => $request->productName,
-            'description' => $request->productLongDesc,
-            'price' => $request->productPrice,
-            'stock_quantity' => $request->productQuantity,
-            'category_id' => $request->category, 
-        ]);
+        $product->save(); // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
 
         return redirect()->route('admin.product.allproduct')->with('success', 'Product updated successfully!');
     }
 
-    public function destroy($id) {
-        $product = Product::findOrFail($id); 
+    // ลบผลิตภัณฑ์
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id); // ค้นหาผลิตภัณฑ์ด้วย ID ที่ส่งมา
 
-        if ($product->image) {
-            // Delete the image from storage
-            \Storage::disk('public')->delete($product->image);
+        // ลบภาพจากเซิร์ฟเวอร์ (หากมี)
+        if (file_exists(public_path($product->image))) {
+            unlink(public_path($product->image));
         }
 
-        $product->delete(); 
-
+        $product->delete(); // ลบผลิตภัณฑ์
         return redirect()->route('admin.product.allproduct')->with('success', 'Product deleted successfully!');
     }
 }
