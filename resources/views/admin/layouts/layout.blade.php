@@ -31,13 +31,15 @@
             </a>
             <!-- Logout Icon -->
             <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                @csrf
-                <button type="submit" class="text-gray-800 hover:text-red-500" title="Logout">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H3m9 9l-9-9 9-9" />
-                    </svg>
-                </button>
-            </form>
+    @csrf
+    <button type="submit" class="text-gray-800 hover:text-red-500" title="Logout">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H6zm0 2h12v16H6V4zm4 10h4m-4-4h4" />
+        </svg>
+    </button>
+</form>
+
+
         </div>
     </header>
 
@@ -46,7 +48,7 @@
         <section class="text-center bg-white py-16">
             <h1 class="text-4xl font-bold mb-4">DP</h1>
             <p class="text-xl text-gray-600 mb-6">IT EQUIPMENT STORE</p>
-            <a href="{{ asset('admin-asset/html/Shop.html') }}" class="bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-500 transition">SHOP NOW</a>
+            <a href="{{ route('mainshop') }}" class="bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-500 transition">SHOP NOW</a>
         </section>
 
         <!-- Products Section -->

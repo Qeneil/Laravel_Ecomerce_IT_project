@@ -26,6 +26,9 @@ Route::get('/shop', [CustomerController::class, 'shop'])->name('shop');
 // Contact route
 Route::get('/contact', [CustomerController::class, 'contact'])->name('contact');
 
+Route::get('/mainshop', [CustomerController::class, 'mainshop'])->name('mainshop');
+
+
 // Admin Routes
 Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () {
     Route::prefix('admin')->group(function () {
@@ -94,5 +97,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/');
+})->name('logout');
 
 require __DIR__ . '/auth.php';

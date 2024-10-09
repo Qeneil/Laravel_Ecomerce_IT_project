@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity')->default(0);
-            $table->foreignId('category_id')->nullable()->constrained('categories', 'category_id')->onDelete('set null'); // เชื่อมโยงกับ categories
+            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null'); // เชื่อมโยงกับ categories
             $table->binary('image')->nullable();
             $table->timestamps();
         });
@@ -32,3 +32,4 @@ return new class extends Migration
         Schema::dropIfExists('products');
     }
 };
+
