@@ -60,37 +60,39 @@
 
     <section class="max-w-6xl mx-auto py-10">
     <form action="{{ route('mainshop') }}" method="GET" class="flex justify-between items-center mb-8">
-        <div>
-            <select name="category" class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
-                <option value="">Select Category</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">
-                        {{ $category->category_name }} <!-- แสดงชื่อประเภท -->
-                    </option>
-                @endforeach
-            </select>
-            <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500">Filter</button>
-        </div>
-        <div>
-    <input type="text" name="product_name" placeholder="Search Products by Name..." class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
-    <input type="number" name="price" placeholder="Max Price..." class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
-    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500">Search</button>
-</div>
-    </form>
+    <div>
+        <select name="category" class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
+            <option value="">Select Category</option>
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}">
+                    {{ $category->category_name }} <!-- แสดงชื่อประเภท -->
+                </option>
+            @endforeach
+        </select>
+        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500">Filter</button>
+    </div>
+    <div>
+        <input type="text" name="product_name" placeholder="Search Products by Name..." class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
+        <input type="number" name="price" placeholder="Max Price..." class="border border-gray-300 rounded-lg py-2 px-4 text-gray-700">
+        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500">Search</button>
+    </div>
+</form>
+
 
     <!-- Products Grid -->
     <h2 class="text-2xl font-semibold mb-6">ALL PRODUCTS</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @foreach ($products as $product)
-            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-                <div class="bg-white p-2 rounded-lg shadow"> <!-- เพิ่มกรอบสีขาวรอบ ๆ ภาพ -->
-                    <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-full h-auto mb-4 rounded">
-                </div>
-                <h3 class="text-xl font-bold mb-2">{{ $product->product_name }}</h3>
-                <p class="text-gray-600">{{ number_format($product->price, 2) }} Baht</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    @foreach ($products as $product)
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <div class="bg-black p-2 rounded-lg shadow"> <!-- เปลี่ยนกรอบเป็นสีดำ -->
+                <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-full h-auto mb-4 rounded">
             </div>
-        @endforeach
-    </div>
+            <h3 class="text-xl font-bold mb-2">{{ $product->product_name }}</h3>
+            <p class="text-gray-600">{{ number_format($product->price, 2) }} Baht</p>
+        </div>
+    @endforeach
+</div>
+
 </section>
 
 
