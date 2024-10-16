@@ -40,9 +40,10 @@ class CustomerController extends Controller
         $categories = Category::all();
     
         // ส่งข้อมูลไปยัง view
-    
+        
         return view('user.mainshop', compact('products', 'categories'));
     }
+    
     
     
 }

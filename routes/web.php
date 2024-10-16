@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\ProductDiscountController;
 use App\Http\Controllers\Admin\ProductPaymentController;
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Customer\ProductCustomerController;
+use App\Http\Controllers\Customer\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +29,9 @@ Route::get('/shop', [CustomerController::class, 'shop'])->name('shop');
 Route::get('/contact', [CustomerController::class, 'contact'])->name('contact');
 
 Route::get('/mainshop', [CustomerController::class, 'mainshop'])->name('mainshop');
+Route::get('/ProductDetails/{id}', [ProductCustomerController::class, 'ProductDetails'])->name('ProductDetails');
+Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+
 
 
 // Admin Routes

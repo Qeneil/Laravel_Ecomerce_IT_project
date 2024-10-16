@@ -81,15 +81,17 @@
 
     <!-- Products Grid -->
     <h2 class="text-2xl font-semibold mb-6">ALL PRODUCTS</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     @foreach ($products as $product)
-        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div class="bg-black p-2 rounded-lg shadow"> <!-- เปลี่ยนกรอบเป็นสีดำ -->
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <a href="{{ route('ProductDetails', $product->product_id) }}" class="block"> <!-- ใช้ product_id -->
+            <div class="bg-black p-2 rounded-lg shadow">
                 <img src="{{ asset($product->image) }}" alt="{{ $product->product_name }}" class="w-full h-auto mb-4 rounded">
             </div>
             <h3 class="text-xl font-bold mb-2">{{ $product->product_name }}</h3>
             <p class="text-gray-600">{{ number_format($product->price, 2) }} Baht</p>
-        </div>
+        </a>
+    </div>
     @endforeach
 </div>
 
