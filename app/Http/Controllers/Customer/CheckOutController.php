@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrdersDetails; // นำเข้า OrdersDetails Model
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckOutController extends Controller
 {
@@ -39,36 +41,59 @@ class CheckOutController extends Controller
         // ดึงข้อมูลสินค้าในตะกร้าของผู้ใช้
         $cartItems = Cart::with('product')->where('user_id', auth()->id())->get();
     
+        // ตรวจสอบว่าตะกร้ามีสินค้าหรือไม่
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->with('error', 'ตะกร้าสินค้าของคุณว่างเปล่า');
+        }
+    
         // คำนวณยอดรวม
         $totalAmount = $cartItems->sum(function($item) {
             return $item->product->price * $item->quantity;
         });
     
-        // บันทึกข้อมูลคำสั่งซื้อในตาราง orders
-        $order = new Order();
-        $order->user_id = auth()->id(); // ระบุ user_id ที่ถูกต้อง
-        $order->name = $request->input('name');
-        $order->address = $request->input('address');
-        $order->phone = $request->input('phone');
-        $order->total_amount = $totalAmount;
-        $order->save(); // บันทึกคำสั่งซื้อและดึง order_id ที่เพิ่งบันทึก
+        // เริ่มต้นการทำธุรกรรม
+        DB::beginTransaction();
     
-        // บันทึกรายละเอียดคำสั่งซื้อใน order_details โดยระบุ order_id ด้วยตัวเอง
-        foreach ($cartItems as $item) {
-            OrdersDetails::create([
-                'order_id' => $order->id,  // กำหนดค่า order_id จากการบันทึก order
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'price' => $item->product->price,
-            ]);
+        try {
+            // บันทึกข้อมูลคำสั่งซื้อในตาราง orders
+            $order = new Order();
+            $order->user_id = auth()->id();
+            $order->name = $request->input('name');
+            $order->address = $request->input('address');
+            $order->phone = $request->input('phone');
+            $order->total_amount = $totalAmount;
+    
+            // บันทึกคำสั่งซื้อ
+            if ($order->save()) {
+                // บันทึกรายละเอียดคำสั่งซื้อใน order_details
+                foreach ($cartItems as $item) {
+                    OrdersDetails::create([
+                        'order_id' => $order->order_id, // กำหนดค่า order_id จากการบันทึก order
+                        'product_id' => $item->product_id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->product->price,
+                    ]);
+                }
+    
+                // ลบสินค้าทั้งหมดในตะกร้าหลังจากทำการสั่งซื้อ
+                Cart::where('user_id', auth()->id())->delete();
+    
+                // ยืนยันการทำธุรกรรม
+                DB::commit();
+    
+                // redirect ไปยังหน้าขอบคุณ (Thank You page)
+                return redirect()->route('showPaymentForm')->with('success', 'คำสั่งซื้อของคุณได้ถูกบันทึกเรียบร้อยแล้ว');
+            } else {
+                throw new \Exception('ไม่สามารถบันทึกคำสั่งซื้อได้');
+            }
+        } catch (\Exception $e) {
+            // ยกเลิกการทำธุรกรรมหากเกิดข้อผิดพลาด
+            DB::rollBack();
+            Log::error('Error occurred: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกคำสั่งซื้อ: ' . $e->getMessage());
         }
-    
-        // ลบสินค้าทั้งหมดในตะกร้าหลังจากทำการสั่งซื้อ
-        Cart::where('user_id', auth()->id())->delete();
-    
-        // redirect ไปยังหน้าขอบคุณ (Thank You page)
-        return redirect()->route('showPaymentForm');
     }
+    
     
     public function showPaymentForm() {
         return view('User.payment.payment'); // ต้องมีไฟล์ view นี้ในตำแหน่งที่ถูกต้อง
