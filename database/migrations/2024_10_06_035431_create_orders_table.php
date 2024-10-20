@@ -10,8 +10,11 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('order_id');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->dateTime('order_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+            $table->string('name');  // เพิ่มคอลัมน์ name
+            $table->string('address');  // เพิ่มคอลัมน์ address
+            $table->string('phone');  // เพิ่มคอลัมน์ phone
+            $table->dateTime('order_date')->useCurrent(); 
             $table->decimal('total_amount', 10, 2);
             $table->enum('order_status', ['Pending', 'Paid', 'Shipped'])->default('Pending');
             $table->timestamps();
@@ -22,5 +25,5 @@ class CreateOrdersTable extends Migration
     {
         Schema::dropIfExists('orders');
     }
+    
 }
-

@@ -6,6 +6,7 @@ use App\Http\Middleware\Rolemanager;
 use App\Http\Controllers\Admin\Adminmaincontroller;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SubcategoryController; 
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\ProductDiscountController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Admin\ProductPaymentController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\ProductCustomerController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\CheckOutController;
+use App\Http\Controllers\Customer\PaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,7 +34,14 @@ Route::get('/contact', [CustomerController::class, 'contact'])->name('contact');
 Route::get('/mainshop', [CustomerController::class, 'mainshop'])->name('mainshop');
 Route::get('/ProductDetails/{id}', [ProductCustomerController::class, 'ProductDetails'])->name('ProductDetails');
 Route::get('/cart', [CartController::class, 'cart'])->name('cart');
-
+Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('addToCart');
+Route::delete('/cart/remove-item/{id}', [CartController::class, 'removeItemById'])->name('removeItemById');
+Route::delete('/cart/remove-all', [CartController::class, 'removeAll'])->name('removeAll');
+Route::get('/checkout', [CheckOutController::class, 'checkout'])->name('checkout');
+Route::post('/PlaceOrder', [CheckOutController::class, 'placeorder'])->name('placeorder');
+Route::get('/payment', [CheckOutController::class, 'showPaymentForm'])->name('showPaymentForm');
+Route::get('/checkpayment', [PaymentController::class, 'checkpayment'])->name('checkpayment');
+Route::post('/payments', [PaymentController::class, 'payments'])->name('payments');
 
 
 // Admin Routes
@@ -86,6 +96,13 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
             Route::get('/payment/create', 'index')->name('admin.payment.create');
             Route::get('/payment/manage', 'manage')->name('admin.payment.manage');
         });
+
+        Route::controller(OrderController::class)->group(function () {
+            Route::get('/orders', 'showApproveOrder')->name('admin.orders'); // แสดงรายการคำสั่งซื้อ
+            Route::get('/payment/manage', 'manage')->name('admin.payment.manage');
+            Route::post('/orders/{id}/approve', 'approveOrder')->name('admin.orders.approve'); // รับคำขอ POST สำหรับการอนุมัติคำสั่งซื้อ
+        });
+        
     });
 });
 

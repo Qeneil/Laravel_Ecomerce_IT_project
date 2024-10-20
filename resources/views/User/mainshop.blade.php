@@ -22,9 +22,17 @@
             <li class="nav-item"><a href="{{ route('contact') }}" class="hover:text-blue-500">CONTACT</a></li>
         </ul>
         <div class="flex space-x-4 relative">
-            <a href="#" class="no-underline">
+            <a href="{{route('cart')}}" class="no-underline">
                 <img src="{{ asset('admin-asset/images/cart.svg') }}" alt="Shopping Cart Icon" class="w-7 h-7">
             </a>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+    @csrf
+    <button type="submit" class="text-gray-800 hover:text-red-500" title="Logout">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 2a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2H6zm0 2h12v16H6V4zm4 10h4m-4-4h4" />
+        </svg>
+    </button>
+</form>
             <!-- Dropdown Button -->
             <button id="dropdownInformationButton"
                 class="text-gray-800 font-medium text-sm px-5 py-2.5 text-center inline-flex items-center dark:text-white"

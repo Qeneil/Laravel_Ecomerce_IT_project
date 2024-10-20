@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id(); // Primary Key
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // เชื่อมโยงกับผู้ใช้
-            $table->foreignId('product_id')->constrained('products', 'product_id')->onDelete('cascade'); // เชื่อมโยงกับ products โดยใช้ product_id
+            $table->foreignId('product_id')->constrained('products', 'product_id')->onDelete('cascade'); // เชื่อมโยงกับ products โดยใช้ 'product_id'
             $table->integer('quantity')->default(1); // จำนวนสินค้าในตะกร้า
             $table->timestamps(); // เวลาที่สร้างและปรับปรุง
         });

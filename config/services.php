@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    // เพิ่ม Stripe โดยไม่แก้ไขส่วนอื่นๆ
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 ];

@@ -9,21 +9,25 @@ class Product extends Model
 {
     use HasFactory;
 
-    // ระบุให้ Laravel รู้ว่าคีย์หลักคือ product_id
-    protected $primaryKey = 'product_id';
+    protected $table = 'products'; // ตั้งชื่อของตาราง
+    protected $primaryKey = 'product_id'; // กำหนด primary key
+    public $timestamps = true; // ถ้าคุณใช้ timestamps ให้ตั้งค่าเป็น true
 
     protected $fillable = [
-        'product_name',
-        'description',
-        'price',
-        'stock_quantity',
-        'category_id', // ต้องมีอยู่แล้ว
-        'image',
+        'product_name', 'description', 'price', 'stock_quantity', 'category_id', 'image',
     ];
 
-    // เพิ่มฟังก์ชันสำหรับความสัมพันธ์กับ Category
+    // ความสัมพันธ์กับ Category
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+
+    // ความสัมพันธ์กับ OrdersDetails
+    public function ordersDetails()
+    {
+        return $this->hasMany(OrdersDetails::class, 'product_id', 'product_id');
+    }
 }
+
+
