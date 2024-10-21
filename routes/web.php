@@ -38,7 +38,11 @@ Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('
 Route::delete('/cart/remove-item/{id}', [CartController::class, 'removeItemById'])->name('removeItemById');
 Route::delete('/cart/remove-all', [CartController::class, 'removeAll'])->name('removeAll');
 Route::get('/checkout', [CheckOutController::class, 'checkout'])->name('checkout');
+Route::get('/checknow', [CheckOutController::class, 'checknow'])->name('checknow');
+Route::post('/buy-now/{product_id}', [CheckOutController::class, 'buyNow'])->name('buyNow');
+Route::get('/check-now', [CheckOutController::class, 'checkNow'])->name('checknow');
 Route::post('/PlaceOrder', [CheckOutController::class, 'placeorder'])->name('placeorder');
+Route::post('/PlaceOrdernow', [CheckOutController::class, 'placeordernow'])->name('placeordernow');
 Route::get('/payment', [CheckOutController::class, 'showPaymentForm'])->name('showPaymentForm');
 Route::get('/checkpayment', [PaymentController::class, 'checkpayment'])->name('checkpayment');
 Route::post('/payments', [PaymentController::class, 'payments'])->name('payments');
@@ -102,6 +106,7 @@ Route::middleware(['auth', 'verified', 'rolemanager:admin'])->group(function () 
             Route::get('/payment/manage', 'manage')->name('admin.payment.manage');
             Route::post('/orders/{id}/approve', 'approveOrder')->name('admin.orders.approve'); // รับคำขอ POST สำหรับการอนุมัติคำสั่งซื้อ
         });
+        
         
     });
 });

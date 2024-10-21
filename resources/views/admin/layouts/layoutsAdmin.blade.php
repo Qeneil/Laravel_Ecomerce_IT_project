@@ -75,7 +75,7 @@
                 <li><a href="{{ route('admin.category.create') }}" class="block p-2 hover:bg-gray-200">Add Category</a></li>
                 <li><a href="{{ route('admin.product.allproduct') }}" class="block p-2 hover:bg-gray-200">All Product</a></li>
                 <li><a href="{{ route('admin.product.addproduct') }}" class="block p-2 hover:bg-gray-200">Add Product</a></li>
-                <li><a href="#" class="block p-2 hover:bg-gray-200">Pending Order</a></li>
+                <li><a href="{{ route('admin.orders') }}" class="block p-2 hover:bg-gray-200">Pending Order</a></li>
             </ul>
         </div>
 

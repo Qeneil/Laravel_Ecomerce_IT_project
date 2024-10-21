@@ -18,7 +18,7 @@
         <ul class="flex space-x-6">
             <li class="nav-item"><a href="" class="hover:text-blue-500">HOME</a></li>
             <li class="nav-item"><a href="#" class="hover:text-blue-500">ABOUT</a></li>
-            <li class="nav-item"><a href="" class="hover:text-blue-500">SHOP</a></li>
+            <li class="nav-item"><a href="#" class="hover:text-blue-500">SHOP</a></li>
             <li class="nav-item"><a href="{{ route('contact') }}" class="hover:text-blue-500">CONTACT</a></li>
         </ul>
         <div class="flex space-x-4 relative">
@@ -33,31 +33,30 @@
                     </svg>
                 </button>
             </form>
-            <!-- Dropdown Button -->
-            <button id="dropdownInformationButton" class="text-gray-800 font-medium text-sm px-5 py-2.5 text-center inline-flex items-center dark:text-white" type="button">
+            <button id="dropdownInformationButton" class="text-gray-800 font-medium text-sm px-5 py-2.5 text-center inline-flex items-center" type="button">
                 <span>User Test</span>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="dropdownInformation" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+            <div id="dropdownInformation" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                <div class="px-4 py-3 text-sm text-gray-900">
                     <div>Test Beta</div>
                     <div class="font-medium truncate">user@gmail.com</div>
                 </div>
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                <ul class="py-2 text-sm text-gray-700">
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Profile</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">My Profile</a>
                     </li>
                     <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">My Orders</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">My Orders</a>
                     </li>
                     <li>
-                        <a href="/html/Dashboard.html" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                        <a href="/html/Dashboard.html" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
                     </li>
                 </ul>
                 <div class="py-2">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Login</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Register</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Register</a>
                 </div>
             </div>
         </div>
@@ -80,7 +79,7 @@
         @endif
 
         <!-- Shipping Information -->
-        <form action="{{ route('placeorder') }}" method="POST">
+        <form action="{{ route('placeordernow') }}" method="POST">
             @csrf
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Name</label>
@@ -94,6 +93,10 @@
                 <label for="phone" class="block text-gray-700">Phone</label>
                 <input type="tel" id="phone" name="phone" required class="border rounded w-full py-2 px-3">
             </div>
+            
+            <!-- Hidden Inputs -->
+            <input type="hidden" name="product_id" value="{{ $checkoutData['product_id'] }}">
+            <input type="hidden" name="quantity" value="{{ $checkoutData['quantity'] }}">
 
             <!-- Order Summary -->
             <h2 class="text-lg font-bold mb-4">Order Summary</h2>
@@ -107,46 +110,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($cartItems as $item)
-                    <tr class="hover:bg-gray-100 text-center">
-                        <td class="py-2 px-4 border-b">{{ $item->product->product_name }}</td>
-                        <td class="py-2 px-4 border-b">{{ number_format($item->product->price, 2) }}</td>
-                        <td class="py-2 px-4 border-b">{{ $item->quantity }}</td>
-                        <td class="py-2 px-4 border-b">{{ number_format($item->product->price * $item->quantity, 2) }}</td>
+                    <tr class="text-center">
+                        <td class="py-2 px-4 border-b">{{ $checkoutData['product_name'] }}</td>
+                        <td class="py-2 px-4 border-b">{{ number_format($checkoutData['price'], 2) }}</td>
+                        <td class="py-2 px-4 border-b">{{ $checkoutData['quantity'] }}</td>
+                        <td class="py-2 px-4 border-b">{{ number_format($checkoutData['price'] * $checkoutData['quantity'], 2) }}</td>
                     </tr>
-                    @endforeach
                 </tbody>
             </table>
 
-            <!-- Total Amount -->
             <div class="flex justify-end mt-4">
-                <span class="font-bold">Total: {{ $totalAmount }}</span>
+                <span class="font-bold">Total: {{ number_format($checkoutData['price'] * $checkoutData['quantity'], 2) }}</span>
             </div>
 
-            <div class="flex justify-end">
-                <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded">Next to Payment</button>
-            </div>
+            <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Place Order</button>
         </form>
-        
     </div>
 
-    <!-- Footer Navigation -->
-    <footer class="bg-gray-200 py-12">
-        <div class="max-w-6xl mx-auto text-center space-y-6">
-            <div class="text-lg font-bold">DP STORE</div>
-            <p class="text-gray-600">Secure Payment | Delivered With Care | Excellent Service</p>
-            <div class="flex justify-center space-x-6">
-                <a href="#" class="hover:text-blue-500">HOME</a>
-                <a href="#" class="hover:text-blue-500">ABOUT</a>
-                <a href="#" class="hover:text-blue-500">SHOP</a>
-                <a href="{{ route('contact') }}" class="hover:text-blue-500">CONTACT</a>
-            </div>
-            <div class="text-sm text-gray-500">© 2024 Technology DP Store</div>
-        </div>
-    </footer>
-
-    <!-- Include the JavaScript file -->
-    <script src="{{ asset('admin-asset/JavaScript/script.js') }}"></script>
+    <script>
+        // JavaScript สำหรับเปิด/ปิด Dropdown
+        document.getElementById('dropdownInformationButton').onclick = function() {
+            var dropdown = document.getElementById('dropdownInformation');
+            dropdown.classList.toggle('hidden');
+        };
+    </script>
 </body>
 
 </html>
